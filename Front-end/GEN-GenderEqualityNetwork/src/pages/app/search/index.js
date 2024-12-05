@@ -17,13 +17,14 @@ import axios from 'axios';
 export default function SearchScreen() {
 
   const [selectedValue, setSelectedValue] = useState('');
-  const [bairro, setBairro] = useState(null);
-  const [cidade, setCidade] = useState(null);
-  const [estado, setEstado] = useState(null);
+  const [bairro, setBairro] = useState([]);
+  const [cidade, setCidade] = useState([]);
+  const [estado, setEstado] = useState([]);
   const [location, setLocation] = useState(null);
   const [isVisible, setIsVisible] = useState(true);
   const [isVisibleMap, setIsVisibleMap] = useState(true);
   const [isVisibleInfo, setIsVisibleInfo] = useState(false);
+  const [pesquisa, setPesquisa] = useState(null)
 
 
   async function requestLocationPermissions() {
@@ -39,6 +40,13 @@ export default function SearchScreen() {
       console.error("Erro ao solicitar permissão de localização:", error);
     }
   }
+  useEffect (() => {
+    axios
+    .get("https://servicodados.ibge.gov.br/api/v1/localidades/estados")
+    .then((response) => {
+      console.log(response.data);
+    });
+  }, []);
 
   useEffect(() => {
     requestLocationPermissions();
@@ -53,7 +61,7 @@ export default function SearchScreen() {
       setLocation(response);
     });
   }, []);
-
+  
   const fetchAddress = async () => {
     if (!cep || cep.length < 8) {
       Alert.alert("Erro", "Por favor, insira um CEP válido com 8 dígitos.");
@@ -88,28 +96,20 @@ export default function SearchScreen() {
       fetchAddress();
       setIsVisibleMap(false);
       setIsVisibleInfo(true);
-      searchByBairro();
-      searchByCidade();
-      searchByEstado();
-
     }
-  }
-
-  function searchByBairro(){
-    
+    if(selectedValue == 'estado'){
+      setIsVisibleMap(true);
+      setIsVisibleInfo(false);
+    }
   }
 
 
   return (
     <View style={styles.Container}>
-      
       <Header />
-
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-
         <View style={styles.searchList}>
           <Text style={styles.title}> Pesquisar por </Text>
-
           <View style={styles.pickerContainer}>
             <Picker
               selectedValue={selectedValue}
@@ -147,6 +147,8 @@ export default function SearchScreen() {
             <TextInput 
               style={styles.textInput} 
               placeholder="Digite sua pesquisa"
+              onChangeText = {setPesquisa}
+              value={pesquisa}
             />
             <TouchableOpacity
               onPress={() => search()}

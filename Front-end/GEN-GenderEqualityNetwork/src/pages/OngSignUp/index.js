@@ -94,7 +94,6 @@ export default function OngSignUp() {
         nome: ongName, 
         telefone: phone,
         email: email,
-        id_usuario: idUsuario,
         cep: cep,
         logradouro: logradouro,
         numero: numero,

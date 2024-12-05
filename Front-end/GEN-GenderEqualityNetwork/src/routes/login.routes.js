@@ -62,6 +62,11 @@ function MyApp() {
 export default function LoginRoutes() {
     return (
         <Stack.Navigator>
+            {/* <Stack.Screen 
+                name="Home" 
+                component={HomeScreen}
+                options={{ headerShown: false }}
+             /> */}
 
             <Stack.Screen
                 name="Welcome1"
